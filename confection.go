@@ -2,6 +2,7 @@ package confection2
 
 import (
 	"encoding/json"
+	"log"
 	"reflect"
 )
 
@@ -17,6 +18,16 @@ func Manage(target interface{}) {
 	}
 
 	config = target
+}
+
+func update(body []byte) {
+	dupe := duplicate(config)
+	if err := unmarshal(body, dupe); err != nil {
+		log.Println("Failed to update config")
+		return
+	}
+
+	config = dupe
 }
 
 func isStructPtr(target interface{}) bool {
