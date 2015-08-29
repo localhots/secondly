@@ -40,24 +40,32 @@ func bootstrap() {
 	}
 	if fileExist(configFile) {
 		log.Println("Loading config file")
-		body, err := readFile(configFile)
-		if err != nil {
-			panic(err)
-		}
-		update(body)
+		readConfig()
 	} else {
 		log.Println("Config file not found, saving an empty one")
-		body, err := json.Marshal(config)
-		if err != nil {
-			panic(err)
-		}
-		if err = writeFile(configFile, body); err != nil {
-			panic(err)
-		}
+		writeConfig()
 	}
 }
 
-func update(body []byte) {
+func readConfig() {
+	body, err := readFile(configFile)
+	if err != nil {
+		panic(err)
+	}
+	updateConfig(body)
+}
+
+func writeConfig() {
+	body, err := json.Marshal(config)
+	if err != nil {
+		panic(err)
+	}
+	if err = writeFile(configFile, body); err != nil {
+		panic(err)
+	}
+}
+
+func updateConfig(body []byte) {
 	dupe := duplicate(config)
 	if err := json.Unmarshal(body, dupe); err != nil {
 		log.Println("Failed to update config")

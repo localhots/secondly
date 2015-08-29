@@ -1,6 +1,9 @@
 package confection2
 
-import "testing"
+import (
+	"encoding/json"
+	"testing"
+)
 
 type testConf struct {
 	Foo string `json:"foo"`
@@ -28,11 +31,11 @@ func TestUnmarshal(t *testing.T) {
 	conf := testConf{}
 	var i interface{} = &conf
 
-	if err := unmarshal([]byte(badJSON), i); err == nil {
+	if err := json.Unmarshal([]byte(badJSON), i); err == nil {
 		t.Error("Expected error")
 	}
 
-	if err := unmarshal([]byte(goodJSON), i); err != nil {
+	if err := json.Unmarshal([]byte(goodJSON), i); err != nil {
 		t.Error("Unexpected error")
 	}
 	if conf.Foo != "baz" {
