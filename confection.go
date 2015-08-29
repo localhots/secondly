@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"flag"
 	"log"
+	"os"
+	"os/signal"
 	"reflect"
+	"syscall"
 )
 
 var (
@@ -28,6 +31,19 @@ func Manage(target interface{}) {
 	config = target
 
 	bootstrap()
+}
+
+// HandleSIGHUP waits a SIGHUP system call and reloads configuration when
+// receives one.
+func HandleSIGHUP() {
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, syscall.SIGHUP)
+	go func() {
+		for _ = range ch {
+			log.Println("SIGHUP received, reloading config")
+			readConfig()
+		}
+	}()
 }
 
 // OnChange adds a callback function that is triggered every time a value of
