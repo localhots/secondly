@@ -3,6 +3,7 @@ package secondly
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -35,6 +36,11 @@ func Manage(target interface{}) {
 	config = target
 
 	bootstrap()
+}
+
+// StartServer will start an HTTP server with web interface to edit config.
+func StartServer(host string, port int) {
+	go startServer(fmt.Sprintf("%s:%d", host, port))
 }
 
 // HandleSIGHUP waits a SIGHUP system call and reloads configuration when
