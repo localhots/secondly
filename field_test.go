@@ -16,16 +16,16 @@ func TestExtractFields(t *testing.T) {
 	}
 
 	fields := extractFields(c, "")
-	testField := func(fieldName, kind string, val interface{}) {
-		if f, ok := fields[fieldName]; ok {
+	testField := func(fname, kind string, val interface{}) {
+		if f, ok := fields[fname]; ok {
 			if f.Kind != kind {
-				t.Errorf("%s expected to be of kind %q, got %q", fieldName, kind, f.Kind)
+				t.Errorf("%s expected to be of kind %q, got %q", fname, kind, f.Kind)
 			}
 			if f.Val != val {
-				t.Errorf("%s expected to have value %q, got %q", fieldName, val, f.Val)
+				t.Errorf("%s expected to have value %q, got %q", fname, val, f.Val)
 			}
 		} else {
-			t.Errorf("Missing %s field", fieldName)
+			t.Errorf("Missing %s field", fname)
 		}
 	}
 
@@ -58,8 +58,8 @@ func TestDiff(t *testing.T) {
 	}
 
 	d := diff(c1, c2)
-	testField := func(fieldName string, oldVal, newVal interface{}) {
-		if f, ok := d[fieldName]; ok {
+	testField := func(fname string, oldVal, newVal interface{}) {
+		if f, ok := d[fname]; ok {
 			if f[0] != oldVal {
 				t.Errorf("%s field old value was %q, not %q", oldVal, f[0])
 			}
@@ -67,7 +67,7 @@ func TestDiff(t *testing.T) {
 				t.Errorf("%s field new value was %q, not %q", newVal, f[1])
 			}
 		} else {
-			t.Errorf("Expected %s field to have different values", fieldName)
+			t.Errorf("Expected %s field to have different values", fname)
 		}
 	}
 

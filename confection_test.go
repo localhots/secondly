@@ -10,6 +10,7 @@ type testConf struct {
 	Version  float32          `json:"version"`
 	Database testDatabaseConf `json:"database"`
 }
+
 type testDatabaseConf struct {
 	Adapter  string `json:"adapter"`
 	Host     string `json:"host"`

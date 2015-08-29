@@ -103,6 +103,14 @@ func triggerCallbacks(oldConf, newConf interface{}) {
 		return
 	}
 
+	for fname, d := range diff(oldConf, newConf) {
+		if cbs, ok := callbacks[fname]; ok {
+			for _, cb := range cbs {
+				cb(d[0], d[1])
+			}
+		}
+	}
+
 	return
 }
 
