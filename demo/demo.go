@@ -35,6 +35,8 @@ func main() {
 	secondly.Manage(&conf)
 	// Handling file system events
 	secondly.HandleFSEvents()
+	// Handle SIGHUP
+	secondly.HandleSIGHUP()
 	// Starting a web server
 	secondly.StartServer("", 5500)
 	// Defining callbacks
