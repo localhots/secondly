@@ -39,7 +39,7 @@ func Manage(target interface{}) {
 		panic("Argument must be a pointer to a struct")
 	}
 
-	config = target
+	assign(target)
 
 	bootstrap()
 }
@@ -109,6 +109,17 @@ func OnChange(field string, fun func(oldVal, newVal interface{})) {
 	callbacks[field] = append(callbacks[field], fun)
 }
 
+func assign(target interface{}) {
+	if config == nil {
+		config = target
+		return
+	}
+
+	cval := reflect.ValueOf(config).Elem()
+	tval := reflect.ValueOf(target).Elem()
+	cval.Set(tval)
+}
+
 func bootstrap() {
 	if configFile == "" {
 		log.Fatalln("path to config file is not set")
@@ -136,16 +147,20 @@ func writeConfig() {
 }
 
 func updateConfig(body []byte) {
+	// Making a copy of old config for further comparison
+	old := duplicate(config)
+	// Making a second copy that we will fill with new data
 	dupe := duplicate(config)
+
 	if err := json.Unmarshal(body, dupe); err != nil {
 		panic("Failed to update config")
 		return
 	}
 
-	defer triggerCallbacks(config, dupe)
-
 	// Setting new config
-	config = dupe
+	assign(dupe)
+
+	triggerCallbacks(old, dupe)
 }
 
 func marshal(obj interface{}) []byte {
@@ -210,7 +225,9 @@ func duplicate(original interface{}) interface{} {
 	// Now we need the type (name) of this struct
 	typ := val.Type()
 	// Creating a duplicate instance of that struct
-	dupe := reflect.New(typ).Interface()
+	dupe := reflect.New(typ)
+	// Value copy
+	dupe.Elem().Set(val)
 
-	return dupe
+	return dupe.Interface()
 }
