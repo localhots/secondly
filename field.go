@@ -6,12 +6,14 @@ import (
 )
 
 type field struct {
+	Path string      `json:"path"`
+	Name string      `json:"name"`
 	Kind string      `json:"kind"`
 	Val  interface{} `json:"val"`
 }
 
-func extractFields(st interface{}, path string) map[string]field {
-	res := make(map[string]field)
+func extractFields(st interface{}, path string) []field {
+	var res []field
 
 	val := reflect.ValueOf(st)
 	if val.Kind() == reflect.Ptr {
@@ -26,9 +28,7 @@ func extractFields(st interface{}, path string) map[string]field {
 		switch kind := fval.Kind(); kind {
 		case reflect.Struct:
 			sub := extractFields(fval.Interface(), ftyp.Name+".")
-			for k, v := range sub {
-				res[k] = v
-			}
+			res = append(res, sub...)
 		case reflect.Bool,
 			reflect.Int,
 			reflect.Int8,
@@ -43,10 +43,12 @@ func extractFields(st interface{}, path string) map[string]field {
 			reflect.Float32,
 			reflect.Float64,
 			reflect.String:
-			res[path+ftyp.Name] = field{
+			res = append(res, field{
+				Path: path + ftyp.Name,
+				Name: ftyp.Name,
 				Kind: kind.String(),
 				Val:  fval.Interface(),
-			}
+			})
 		default:
 			log.Printf("Field type %q not supported for field %q\n", kind, path+ftyp.Name)
 		}
@@ -56,14 +58,23 @@ func extractFields(st interface{}, path string) map[string]field {
 }
 
 func diff(a, b interface{}) map[string][]interface{} {
-	af := extractFields(a, "")
-	bf := extractFields(b, "")
+	af := indexFields(extractFields(a, ""))
+	bf := indexFields(extractFields(b, ""))
 
 	res := make(map[string][]interface{})
 	for name, f := range af {
 		if bf[name].Val != f.Val {
 			res[name] = []interface{}{f.Val, bf[name].Val}
 		}
+	}
+
+	return res
+}
+
+func indexFields(fields []field) map[string]field {
+	res := make(map[string]field)
+	for _, f := range fields {
+		res[f.Path] = f
 	}
 
 	return res

@@ -15,7 +15,7 @@ func TestExtractFields(t *testing.T) {
 		},
 	}
 
-	fields := extractFields(c, "")
+	fields := indexFields(extractFields(c, ""))
 	testField := func(fname, kind string, val interface{}) {
 		if f, ok := fields[fname]; ok {
 			if f.Kind != kind {

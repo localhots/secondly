@@ -24,6 +24,10 @@ var (
 
 // SetupFlags sets up Confection configuration flags.
 func SetupFlags() {
+	if flag.Parsed() {
+		log.Fatalln("secondly.SetupFlags() must be called before flag.Parse()")
+	}
+
 	flag.StringVar(&configFile, "config", "config.json", "Path to config file")
 }
 
@@ -99,14 +103,13 @@ func OnChange(field string, fun func(oldVal, newVal interface{})) {
 
 func bootstrap() {
 	if configFile == "" {
-		panic("path to config file is not set")
+		log.Fatalln("path to config file is not set")
 	}
 	if fileExist(configFile) {
 		log.Println("Loading config file")
 		readConfig()
 	} else {
-		log.Println("Config file not found, saving an empty one")
-		writeConfig()
+		log.Fatalln("Config file not found")
 	}
 }
 
@@ -131,7 +134,7 @@ func writeConfig() {
 func updateConfig(body []byte) {
 	dupe := duplicate(config)
 	if err := json.Unmarshal(body, dupe); err != nil {
-		log.Println("Failed to update config")
+		panic("Failed to update config")
 		return
 	}
 
