@@ -1,4 +1,4 @@
-package confection2
+package secondly
 
 import (
 	"encoding/json"
@@ -20,7 +20,7 @@ type testDatabaseConf struct {
 }
 
 const (
-	goodJSON = `{"app_name": "Confection", "version": 1}`
+	goodJSON = `{"app_name": "Secondly", "version": 1}`
 	badJSON  = `{"app_name": "noooo...`
 )
 
@@ -47,8 +47,8 @@ func TestUnmarshal(t *testing.T) {
 	if err := json.Unmarshal([]byte(goodJSON), i); err != nil {
 		t.Error("Unexpected error")
 	}
-	if conf.AppName != "Confection" {
-		t.Errorf("Expected Foo to equal %q, got %q", "Confection", conf.AppName)
+	if conf.AppName != "Secondly" {
+		t.Errorf("Expected Foo to equal %q, got %q", "Secondly", conf.AppName)
 	}
 	if conf.Version != 1 {
 		t.Errorf("Expected Bar to equal %q, got %q", 1, conf.Version)

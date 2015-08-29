@@ -1,4 +1,4 @@
-package confection2
+package secondly
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 
 func TestExtractFields(t *testing.T) {
 	c := testConf{
-		AppName: "Confection",
+		AppName: "Secondly",
 		Version: 1.1,
 		Database: testDatabaseConf{
 			Adapter: "mysql",
@@ -38,7 +38,7 @@ func TestExtractFields(t *testing.T) {
 
 func TestDiff(t *testing.T) {
 	c1 := testConf{
-		AppName: "Confection",
+		AppName: "Secondly",
 		Version: 1.3,
 		Database: testDatabaseConf{
 			Adapter: "mysql",
@@ -47,7 +47,7 @@ func TestDiff(t *testing.T) {
 		},
 	}
 	c2 := testConf{
-		AppName: "Confection",
+		AppName: "Secondly",
 		Version: 2,
 		Database: testDatabaseConf{
 			Adapter:  "postgresql",

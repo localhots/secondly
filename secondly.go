@@ -1,4 +1,4 @@
-package confection2
+package secondly
 
 import (
 	"encoding/json"
