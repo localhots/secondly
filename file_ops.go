@@ -23,13 +23,14 @@ func readFile(file string) ([]byte, error) {
 }
 
 func writeFile(file string, body []byte) error {
-	var fd *os.File
 	var err error
 	if ok := fileExist(file); !ok {
 		if err = mkdirp(file); err != nil {
 			return err
 		}
 	}
+
+	var fd *os.File
 	if fd, err = os.OpenFile(file, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, filePerm); err != nil {
 		return err
 	}
