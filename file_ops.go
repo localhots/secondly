@@ -12,12 +12,14 @@ const (
 	filePerm = 0633
 )
 
+var errFileNotExist = errors.New("Config file does not exist")
+
 func readFile(file string) ([]byte, error) {
 	if ok := fileExist(file); ok {
 		return ioutil.ReadFile(file)
 	}
 
-	return nil, errors.New("Config file does not exist")
+	return nil, errFileNotExist
 }
 
 func writeFile(file string, body []byte) error {

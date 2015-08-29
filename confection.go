@@ -2,15 +2,22 @@ package confection2
 
 import (
 	"encoding/json"
+	"flag"
 	"log"
 	"reflect"
 )
 
 var (
-	// config stores application config.
-	config    interface{}
-	callbacks = make(map[string][]func(oldVal, newVal interface{}))
+	config      interface{} // config stores application config
+	configFile  string
+	callbacks   = make(map[string][]func(oldVal, newVal interface{}))
+	initialized bool
 )
+
+// SetFlags sets up Confection configuration flags.
+func SetFlags() {
+	flag.StringVar(&configFile, "config", "config.json", "Path to config file")
+}
 
 // Manage accepts a pointer to a configuration struct.
 func Manage(target interface{}) {
@@ -27,6 +34,29 @@ func OnChange(field string, fun func(oldVal, newVal interface{})) {
 	callbacks[field] = append(callbacks[field], fun)
 }
 
+func bootstrap() {
+	if configFile == "" {
+		panic("path to config file is not set")
+	}
+	if fileExist(configFile) {
+		log.Println("Loading config file")
+		body, err := readFile(configFile)
+		if err != nil {
+			panic(err)
+		}
+		update(body)
+	} else {
+		log.Println("Config file not found, saving an empty one")
+		body, err := json.Marshal(config)
+		if err != nil {
+			panic(err)
+		}
+		if err = writeFile(configFile, body); err != nil {
+			panic(err)
+		}
+	}
+}
+
 func update(body []byte) {
 	dupe := duplicate(config)
 	if err := unmarshal(body, dupe); err != nil {
@@ -41,6 +71,12 @@ func update(body []byte) {
 }
 
 func triggerCallbacks(oldConf, newConf interface{}) {
+	// Don't trigger callbacks on fist load
+	if !initialized {
+		initialized = true
+		return
+	}
+
 	return
 }
 
