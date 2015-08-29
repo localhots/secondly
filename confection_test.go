@@ -42,3 +42,12 @@ func TestUnmarshal(t *testing.T) {
 		t.Errorf("Expected Bar to equal %q, got %q", 1, conf.Bar)
 	}
 }
+
+func TestDuplicate(t *testing.T) {
+	var i interface{} = &testConf{}
+
+	dupe := duplicate(i)
+	if _, ok := dupe.(*testConf); !ok {
+		t.Error("Duplication failed")
+	}
+}

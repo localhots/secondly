@@ -27,3 +27,16 @@ func unmarshal(body []byte, target interface{}) error {
 
 	return nil
 }
+
+func duplicate(original interface{}) interface{} {
+	// Get the interface value
+	val := reflect.ValueOf(original)
+	// We expect a pointer to a struct, so now we need the underlying staruct
+	val = reflect.Indirect(val)
+	// Now we need the type (name) of this struct
+	typ := val.Type()
+	// Creating a duplicate instance of that struct
+	dupe := reflect.New(typ).Interface()
+
+	return dupe
+}
