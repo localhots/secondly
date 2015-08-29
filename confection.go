@@ -26,6 +26,8 @@ func Manage(target interface{}) {
 	}
 
 	config = target
+
+	bootstrap()
 }
 
 // OnChange adds a callback function that is triggered every time a value of
