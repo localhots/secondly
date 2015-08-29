@@ -21,6 +21,7 @@ var (
 	configFile  string
 	callbacks   = make(map[string][]func(oldVal, newVal interface{}))
 	initialized bool
+	initFunc    func()
 )
 
 // SetupFlags sets up Confection configuration flags.
@@ -94,6 +95,12 @@ func HandleFSEvents() {
 			}
 		}
 	}()
+}
+
+// OnLoad sets up a callback function that would be called once configuration
+// is loaded for the first time.
+func OnLoad(fun func()) {
+	initFunc = fun
 }
 
 // OnChange adds a callback function that is triggered every time a value of
