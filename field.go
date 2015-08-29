@@ -49,3 +49,17 @@ func extractFields(st interface{}, path string) map[string]field {
 
 	return res
 }
+
+func diff(a, b interface{}) map[string][]interface{} {
+	af := extractFields(a, "")
+	bf := extractFields(b, "")
+
+	res := make(map[string][]interface{})
+	for name, f := range af {
+		if bf[name].Val != f.Val {
+			res[name] = []interface{}{f.Val, bf[name].Val}
+		}
+	}
+
+	return res
+}

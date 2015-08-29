@@ -35,3 +35,51 @@ func TestExtractFields(t *testing.T) {
 	testField("Database.Host", "string", c.Database.Host)
 	testField("Database.Port", "int", c.Database.Port)
 }
+
+func TestDiff(t *testing.T) {
+	c1 := testConf{
+		AppName: "Confection",
+		Version: 1.3,
+		Database: testDatabaseConf{
+			Adapter: "mysql",
+			Host:    "localhost",
+			Port:    3306,
+		},
+	}
+	c2 := testConf{
+		AppName: "Confection",
+		Version: 2,
+		Database: testDatabaseConf{
+			Adapter:  "postgresql",
+			Host:     "localhost",
+			Port:     5432,
+			Username: "root",
+		},
+	}
+
+	d := diff(c1, c2)
+	testField := func(fieldName string, oldVal, newVal interface{}) {
+		if f, ok := d[fieldName]; ok {
+			if f[0] != oldVal {
+				t.Errorf("%s field old value was %q, not %q", oldVal, f[0])
+			}
+			if f[1] != newVal {
+				t.Errorf("%s field new value was %q, not %q", newVal, f[1])
+			}
+		} else {
+			t.Errorf("Expected %s field to have different values", fieldName)
+		}
+	}
+
+	unchangedFields := []string{"AppName", "Database.Host", "Database.Password"}
+	for _, f := range unchangedFields {
+		if _, ok := d[f]; ok {
+			t.Errorf("Expected %q field to be unchanged", f)
+		}
+	}
+
+	testField("Version", c1.Version, c2.Version)
+	testField("Database.Adapter", c1.Database.Adapter, c2.Database.Adapter)
+	testField("Database.Port", c1.Database.Port, c2.Database.Port)
+	testField("Database.Username", c1.Database.Username, c2.Database.Username)
+}
