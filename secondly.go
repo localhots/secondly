@@ -6,8 +6,12 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"reflect"
+	"strings"
 	"syscall"
+
+	"github.com/howeyc/fsnotify"
 )
 
 var (
@@ -17,8 +21,8 @@ var (
 	initialized bool
 )
 
-// SetFlags sets up Confection configuration flags.
-func SetFlags() {
+// SetupFlags sets up Confection configuration flags.
+func SetupFlags() {
 	flag.StringVar(&configFile, "config", "config.json", "Path to config file")
 }
 
@@ -42,6 +46,41 @@ func HandleSIGHUP() {
 		for _ = range ch {
 			log.Println("SIGHUP received, reloading config")
 			readConfig()
+		}
+	}()
+}
+
+// HandleFSEvents listens to file system events and reloads configuration when
+// config file is modified.
+func HandleFSEvents() {
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		panic(err)
+	}
+	if err := watcher.WatchFlags(filepath.Dir(configFile), fsnotify.FSN_MODIFY); err != nil {
+		panic(err)
+	}
+
+	fname := configFile
+	if ss := strings.Split(configFile, "/"); len(ss) > 1 {
+		fname = ss[len(ss)-1]
+	}
+
+	go func() {
+		for {
+			select {
+			case e := <-watcher.Event:
+				if e.Name != fname {
+					continue
+				}
+				if !e.IsModify() {
+					continue
+				}
+				log.Println("Config file was modified, reloading")
+				readConfig()
+			case err := <-watcher.Error:
+				log.Println("fsnotify error:", err)
+			}
 		}
 	}()
 }
@@ -100,6 +139,10 @@ func triggerCallbacks(oldConf, newConf interface{}) {
 	// Don't trigger callbacks on fist load
 	if !initialized {
 		initialized = true
+		return
+	}
+
+	if len(callbacks) == 0 {
 		return
 	}
 
