@@ -8,7 +8,8 @@ import (
 
 var (
 	// config stores application config.
-	config interface{}
+	config    interface{}
+	callbacks = make(map[string][]func(oldVal, newVal interface{}))
 )
 
 // Manage accepts a pointer to a configuration struct.
@@ -20,6 +21,12 @@ func Manage(target interface{}) {
 	config = target
 }
 
+// OnChange adds a callback function that is triggered every time a value of
+// a field changes.
+func OnChange(field string, fun func(oldVal, newVal interface{})) {
+	callbacks[field] = append(callbacks[field], fun)
+}
+
 func update(body []byte) {
 	dupe := duplicate(config)
 	if err := unmarshal(body, dupe); err != nil {
@@ -27,7 +34,14 @@ func update(body []byte) {
 		return
 	}
 
+	defer triggerCallbacks(config, dupe)
+
+	// Setting new config
 	config = dupe
+}
+
+func triggerCallbacks(oldConf, newConf interface{}) {
+	return
 }
 
 func isStructPtr(target interface{}) bool {
