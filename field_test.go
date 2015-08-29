@@ -21,8 +21,8 @@ func TestExtractFields(t *testing.T) {
 			if f.Kind != kind {
 				t.Errorf("%s expected to be of kind %q, got %q", fname, kind, f.Kind)
 			}
-			if f.Val != val {
-				t.Errorf("%s expected to have value %q, got %q", fname, val, f.Val)
+			if f.Value != val {
+				t.Errorf("%s expected to have value %q, got %q", fname, val, f.Value)
 			}
 		} else {
 			t.Errorf("Missing %s field", fname)

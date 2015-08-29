@@ -6,10 +6,10 @@ import (
 )
 
 type field struct {
-	Path string      `json:"path"`
-	Name string      `json:"name"`
-	Kind string      `json:"kind"`
-	Val  interface{} `json:"val"`
+	Path  string      `json:"path"`
+	Name  string      `json:"name"`
+	Kind  string      `json:"kind"`
+	Value interface{} `json:"val"`
 }
 
 func extractFields(st interface{}, path string) []field {
@@ -44,10 +44,10 @@ func extractFields(st interface{}, path string) []field {
 			reflect.Float64,
 			reflect.String:
 			res = append(res, field{
-				Path: path + ftyp.Name,
-				Name: ftyp.Name,
-				Kind: kind.String(),
-				Val:  fval.Interface(),
+				Path:  path + ftyp.Name,
+				Name:  ftyp.Name,
+				Kind:  kind.String(),
+				Value: fval.Interface(),
 			})
 		default:
 			log.Printf("Field type %q not supported for field %q\n", kind, path+ftyp.Name)
@@ -63,8 +63,8 @@ func diff(a, b interface{}) map[string][]interface{} {
 
 	res := make(map[string][]interface{})
 	for name, f := range af {
-		if bf[name].Val != f.Val {
-			res[name] = []interface{}{f.Val, bf[name].Val}
+		if bf[name].Value != f.Value {
+			res[name] = []interface{}{f.Value, bf[name].Value}
 		}
 	}
 
