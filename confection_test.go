@@ -6,13 +6,21 @@ import (
 )
 
 type testConf struct {
-	Foo string `json:"foo"`
-	Bar int    `json:"bar"`
+	AppName  string           `json:"app_name"`
+	Version  float32          `json:"version"`
+	Database testDatabaseConf `json:"database"`
+}
+type testDatabaseConf struct {
+	Adapter  string `json:"adapter"`
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 const (
-	goodJSON = `{"foo": "baz", "bar": 1}`
-	badJSON  = `{"foo": "noooo...`
+	goodJSON = `{"app_name": "Confection", "version": 1}`
+	badJSON  = `{"app_name": "noooo...`
 )
 
 func TestIsStructPtr(t *testing.T) {
@@ -38,11 +46,11 @@ func TestUnmarshal(t *testing.T) {
 	if err := json.Unmarshal([]byte(goodJSON), i); err != nil {
 		t.Error("Unexpected error")
 	}
-	if conf.Foo != "baz" {
-		t.Errorf("Expected Foo to equal %q, got %q", "baz", conf.Foo)
+	if conf.AppName != "Confection" {
+		t.Errorf("Expected Foo to equal %q, got %q", "Confection", conf.AppName)
 	}
-	if conf.Bar != 1 {
-		t.Errorf("Expected Bar to equal %q, got %q", 1, conf.Bar)
+	if conf.Version != 1 {
+		t.Errorf("Expected Bar to equal %q, got %q", 1, conf.Version)
 	}
 }
 
