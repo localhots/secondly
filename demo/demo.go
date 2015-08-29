@@ -4,8 +4,6 @@ import (
 	"flag"
 	"log"
 
-	"github.com/kr/pretty"
-
 	"github.com/localhots/secondly"
 )
 
@@ -44,7 +42,6 @@ func main() {
 	// Defining callbacks
 	secondly.OnChange("app_name", func(o, n interface{}) {
 		log.Printf("OMG! AppName changed from %q to %q", o, n)
-		pretty.Println(conf)
 	})
 
 	// Other application startup logic

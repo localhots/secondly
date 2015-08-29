@@ -1,3 +1,7 @@
+// Package secondly is a configuration management plugin for Go projects.
+// It takes care of the app's configuration, specifically of updating it in
+// runtime. It is capable of listening to file system events and signals to
+// trigger configuration reload. It also provides a nice web GUI editor.
 package secondly
 
 import (
@@ -24,7 +28,7 @@ var (
 	initFunc    func()
 )
 
-// SetupFlags sets up Confection configuration flags.
+// SetupFlags sets up Secondly's configuration flags.
 func SetupFlags() {
 	if flag.Parsed() {
 		log.Fatalln("secondly.SetupFlags() must be called before flag.Parse()")
@@ -55,16 +59,16 @@ func HandleSIGHUP() {
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGHUP)
 	go func() {
-		for _ = range ch {
+		for range ch {
 			log.Println("SIGHUP received, reloading config")
 			readConfig()
 		}
 	}()
 }
 
-// HandleFSEvents listens to file system events and reloads configuration when
+// HandleFileSystemEvents listens to file system events and reloads configuration when
 // config file is modified.
-func HandleFSEvents() {
+func HandleFileSystemEvents() {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		panic(err)
@@ -85,9 +89,6 @@ func HandleFSEvents() {
 				if e.Name != fname {
 					continue
 				}
-				if !e.IsModify() {
-					continue
-				}
 				log.Println("Config file was modified, reloading")
 				readConfig()
 			case err := <-watcher.Error:
@@ -104,11 +105,14 @@ func OnLoad(fun func()) {
 }
 
 // OnChange adds a callback function that is triggered every time a value of
-// a field changes.
+// a field changes. Field must be a json tag of the struct field.
 func OnChange(field string, fun func(oldVal, newVal interface{})) {
 	callbacks[field] = append(callbacks[field], fun)
 }
 
+// asign is responsible for assigning new config value. It is complicated
+// because we're changing the value of an interface which is defined in
+// another package.
 func assign(target interface{}) {
 	if config == nil {
 		config = target
@@ -120,6 +124,7 @@ func assign(target interface{}) {
 	cval.Set(tval)
 }
 
+// bootstrap sets up initial configuration.
 func bootstrap() {
 	if configFile == "" {
 		log.Fatalln("path to config file is not set")
@@ -207,6 +212,8 @@ func triggerCallbacks(oldConf, newConf interface{}) {
 	return
 }
 
+// Secondly accepts only a pointer to stuct as its config value. Here we're
+// making sure the right argument is provided.
 func isStructPtr(target interface{}) bool {
 	if val := reflect.ValueOf(target); val.Kind() == reflect.Ptr {
 		if val = reflect.Indirect(val); val.Kind() == reflect.Struct {
@@ -217,6 +224,8 @@ func isStructPtr(target interface{}) bool {
 	return false
 }
 
+// duplicate creates a copy of a value behind the config interface. Such copies
+// are used to replace config value and to check for changes.
 func duplicate(original interface{}) interface{} {
 	// Get the interface value
 	val := reflect.ValueOf(original)

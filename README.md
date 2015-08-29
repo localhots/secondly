@@ -64,7 +64,7 @@ secondly.StartServer("", 5500)
 Tired of restarting the app every time you modify the config? You're not alone.
 
 ```go
-secondly.HandleFSEvents()
+secondly.HandleFileSystemEvents()
 ```
 
 Want some more control over when specifically the config will be reloaded? Ask
