@@ -9,7 +9,7 @@ type field struct {
 	Path  string      `json:"path"`
 	Name  string      `json:"name"`
 	Kind  string      `json:"kind"`
-	Value interface{} `json:"val"`
+	Value interface{} `json:"value"`
 }
 
 func extractFields(st interface{}, path string) []field {
@@ -24,10 +24,11 @@ func extractFields(st interface{}, path string) []field {
 	for i := 0; i < val.NumField(); i++ {
 		ftyp := typ.Field(i)
 		fval := val.Field(i)
+		tag := ftyp.Tag.Get("json")
 
 		switch kind := fval.Kind(); kind {
 		case reflect.Struct:
-			sub := extractFields(fval.Interface(), ftyp.Name+".")
+			sub := extractFields(fval.Interface(), path+tag+".")
 			res = append(res, sub...)
 		case reflect.Bool,
 			reflect.Int,
@@ -44,13 +45,13 @@ func extractFields(st interface{}, path string) []field {
 			reflect.Float64,
 			reflect.String:
 			res = append(res, field{
-				Path:  path + ftyp.Name,
+				Path:  path + tag,
 				Name:  ftyp.Name,
 				Kind:  kind.String(),
 				Value: fval.Interface(),
 			})
 		default:
-			log.Printf("Field type %q not supported for field %q\n", kind, path+ftyp.Name)
+			log.Printf("Field type %q not supported for field %q\n", kind, path+tag)
 		}
 	}
 
