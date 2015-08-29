@@ -1,0 +1,67 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+* {
+    line-height: 40px;
+    font-size: 16px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.container {
+    margin: 50px 0 0 50px;
+    font-weight: 400;
+}
+h1 {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 32px;
+    margin: 0;
+    padding: 0;
+}
+h2 {
+    line-height: 40px;
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+    font-weight: 600;
+}
+h3 {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 30px;
+    margin: 0 0 30px;
+    padding: 0;
+    color: #aaa;
+}
+label {
+    display: inline-block;
+    width: 100px;
+}
+input {
+    font-size: 16px;
+    padding: 0 5px;
+    width: 250px;
+    line-height: 26px;
+}
+button {
+    float: left;
+    margin: 20px 0;
+    padding: 0 15px;
+    line-height: 30px;
+}
+.padding {
+    float: left;
+    width: 5px;
+    height: 40px;
+    margin: 0 15px 0 0;
+    background-color: #ade;
+}
+#notice {
+    margin: 15px 0 0 100px;
+}
+.success {
+    color: #0a0;
+}
+.error {
+    color: #a00;
+}
