@@ -1,12 +1,12 @@
 # Secondly
 
-Secondly is a configuration management plugin for Go projects. It taks care of
+Secondly is a configuration management plugin for Go projects. It takes care of
 the app's configuration, specifically of updating it in runtime.
 
 ## Configuration
 
-First we need to define a struct that will hold app's configuration. Let's make
-it simple for demostration purposes.
+First, we need to define a struct that will hold the app's configuration. Let's
+make it simple for demonstration purposes.
 
 ```go
 type Config struct {
@@ -15,9 +15,9 @@ type Config struct {
 }
 ```
 
-Make sure you've defined `json` tags on each field.
+Make sure you've added `json` tags to each field.
 
-Next, right where you will define your app's flags ask Secondly to add one for
+Next, right where you will define your app's flags, ask Secondly to add one for
 configuration file.
 
 ```go
@@ -41,8 +41,8 @@ secondly.Manage(&conf)
 go secondly.Manage(&conf)
 ```
 
-If you prefer to configure the app asynchronously then you'll probably want to
-know when configuration is loaded, so there's a handly helper function just for
+If you prefer to configure the app asynchronously, then you'll probably want to
+know when configuration is loaded, so there's a handy helper function just for
 that:
 
 ```go
@@ -75,10 +75,11 @@ secondly.HandleSIGHUP()
 ```
 
 You can also set up callback functions on specific fields and receive a call
-when this fields value changes.
+when this field's value changes.
 
 ```go
-secondly.OnChange("NumWorkers", func(oldVal, newVal interface{}) {
+// Refer to a field using its json tag
+secondly.OnChange("num_workers", func(oldVal, newVal interface{}) {
     old := oldVal.(int)
     cur := newVal.(int)
     if cur > old {
@@ -99,7 +100,7 @@ Full example can be found [here](https://github.com/localhots/secondly/blob/mast
 
 ## Building
 
-The only thing to keep in mind when building Secndly is to convert assets into a
+The only thing to keep in mind when building Secondly is to convert assets into a
 binary form so they could be kept in memory of your app and would not require
 any additional web server configuration.
 
