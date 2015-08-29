@@ -36,10 +36,14 @@ Now we need to ask Secondly to take care of your configuration:
 ```go
 var conf Config
 secondly.Manage(&conf)
+
+// or asynchronously
+go secondly.Manage(&conf)
 ```
 
-You'll probably want to know when configuration is loaded, so there's a handly
-helper function just for that:
+If you prefer to configure the app asynchronously then you'll probably want to
+know when configuration is loaded, so there's a handly helper function just for
+that:
 
 ```go
 secondly.OnLoad(func(){
@@ -53,7 +57,7 @@ configuration of your app. But this is not what you came for, right?
 If you want a configuration GUI, simply start Secondly's web server on a port
 you want.
 
-```
+```go
 secondly.StartServer("", 5500)
 ```
 

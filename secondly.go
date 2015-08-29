@@ -171,6 +171,9 @@ func triggerCallbacks(oldConf, newConf interface{}) {
 	// Don't trigger callbacks on fist load
 	if !initialized {
 		initialized = true
+		if initFunc != nil {
+			initFunc()
+		}
 		return
 	}
 
