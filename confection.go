@@ -59,7 +59,7 @@ func bootstrap() {
 
 func update(body []byte) {
 	dupe := duplicate(config)
-	if err := unmarshal(body, dupe); err != nil {
+	if err := json.Unmarshal(body, dupe); err != nil {
 		log.Println("Failed to update config")
 		return
 	}
@@ -88,14 +88,6 @@ func isStructPtr(target interface{}) bool {
 	}
 
 	return false
-}
-
-func unmarshal(body []byte, target interface{}) error {
-	if err := json.Unmarshal(body, target); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func duplicate(original interface{}) interface{} {
