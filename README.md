@@ -1,6 +1,6 @@
 # Secondly
 
-Secondly is a configuration manager plugin for Go projects. It taks care of
+Secondly is a configuration management plugin for Go projects. It taks care of
 the app's configuration, specifically of updating it in runtime.
 
 ## Configuration
@@ -91,7 +91,7 @@ Full example can be found [here](https://github.com/localhots/secondly/blob/mast
 
 ## Demo Screenshot
 
-<img src="https://raw.githubusercontent.com/localhots/secondly/master/demo/demo.png" width="440">
+<img src="https://raw.githubusercontent.com/localhots/secondly/master/demo/screenshot.png" width="440">
 
 ## Building
 
