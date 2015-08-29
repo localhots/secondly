@@ -29,10 +29,8 @@ func writeFile(file string, body []byte) error {
 		if err = mkdirp(file); err != nil {
 			return err
 		}
-		if fd, err = os.Create(file); err != nil {
-			return err
-		}
-	} else if fd, err = os.OpenFile(file, os.O_TRUNC|os.O_WRONLY, filePerm); err != nil {
+	}
+	if fd, err = os.OpenFile(file, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, filePerm); err != nil {
 		return err
 	}
 	defer fd.Close()

@@ -1,6 +1,7 @@
 package secondly
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -122,11 +123,7 @@ func readConfig() {
 }
 
 func writeConfig() {
-	body, err := json.Marshal(config)
-	if err != nil {
-		panic(err)
-	}
-	if err = writeFile(configFile, body); err != nil {
+	if err := writeFile(configFile, marshal(config)); err != nil {
 		panic(err)
 	}
 }
@@ -142,6 +139,25 @@ func updateConfig(body []byte) {
 
 	// Setting new config
 	config = dupe
+}
+
+func marshal(obj interface{}) []byte {
+	body, err := json.Marshal(config)
+	if err != nil {
+		panic(err)
+	}
+	out := bytes.NewBuffer([]byte{})
+
+	// Indent with empty prefix and four spaces
+	if err = json.Indent(out, body, "", "    "); err != nil {
+		panic(err)
+	}
+
+	// Adding a trailing newline
+	// It's good for your carma
+	out.WriteByte('\n')
+
+	return out.Bytes()
 }
 
 func triggerCallbacks(oldConf, newConf interface{}) {
