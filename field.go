@@ -12,8 +12,13 @@ type field struct {
 
 func extractFields(st interface{}, path string) map[string]field {
 	res := make(map[string]field)
-	typ := reflect.TypeOf(st)
+
 	val := reflect.ValueOf(st)
+	if val.Kind() == reflect.Ptr {
+		val = reflect.Indirect(val)
+	}
+	typ := val.Type()
+
 	for i := 0; i < val.NumField(); i++ {
 		ftyp := typ.Field(i)
 		fval := val.Field(i)
