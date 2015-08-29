@@ -29,11 +29,11 @@ func TestExtractFields(t *testing.T) {
 		}
 	}
 
-	testField("AppName", "string", c.AppName)
-	testField("Version", "float32", c.Version)
-	testField("Database.Adapter", "string", c.Database.Adapter)
-	testField("Database.Host", "string", c.Database.Host)
-	testField("Database.Port", "int", c.Database.Port)
+	testField("app_name", "string", c.AppName)
+	testField("version", "float32", c.Version)
+	testField("database.adapter", "string", c.Database.Adapter)
+	testField("database.host", "string", c.Database.Host)
+	testField("database.port", "int", c.Database.Port)
 }
 
 func TestDiff(t *testing.T) {
@@ -71,15 +71,15 @@ func TestDiff(t *testing.T) {
 		}
 	}
 
-	unchangedFields := []string{"AppName", "Database.Host", "Database.Password"}
+	unchangedFields := []string{"app_name", "database.host", "database.password"}
 	for _, f := range unchangedFields {
 		if _, ok := d[f]; ok {
 			t.Errorf("Expected %q field to be unchanged", f)
 		}
 	}
 
-	testField("Version", c1.Version, c2.Version)
-	testField("Database.Adapter", c1.Database.Adapter, c2.Database.Adapter)
-	testField("Database.Port", c1.Database.Port, c2.Database.Port)
-	testField("Database.Username", c1.Database.Username, c2.Database.Username)
+	testField("version", c1.Version, c2.Version)
+	testField("database.adapter", c1.Database.Adapter, c2.Database.Adapter)
+	testField("database.port", c1.Database.Port, c2.Database.Port)
+	testField("database.username", c1.Database.Username, c2.Database.Username)
 }
