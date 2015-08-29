@@ -10,6 +10,15 @@ var (
 	config interface{}
 )
 
+// Manage accepts a pointer to a configuration struct.
+func Manage(target interface{}) {
+	if ok := isStructPtr(target); !ok {
+		panic("Argument must be a pointer to a struct")
+	}
+
+	config = target
+}
+
 func isStructPtr(target interface{}) bool {
 	if val := reflect.ValueOf(target); val.Kind() == reflect.Ptr {
 		if val = reflect.Indirect(val); val.Kind() == reflect.Struct {
